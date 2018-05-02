@@ -1,0 +1,14 @@
+#!/bin/bash
+#!/bin/sh
+#
+#Kasutab kahte faili parameetritena
+#
+for kasutaja in `more kasutaja.txt`
+do
+	echo $kasutaja
+	sudo adduser $kasutaja --gecos "" --disabled-password
+done
+for parool in `more parool.txt`
+do
+	echo $kasutaja:$parool | sudo chpasswd
+done
