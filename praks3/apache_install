@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+#Kas apache on paigaldatud?
+#
+if ! [ -x "$(command which apache2)" ]; then
+	echo 'apache2 pole paigaldatud!' >&2
+	echo "paigaldame selle sinu eest"
+	sudo apt-get install apache2 -y
+else
+	echo "apache2 on juba olemas"
+fi
