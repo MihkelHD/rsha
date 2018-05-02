@@ -1,0 +1,10 @@
+#!/bin/bash
+#!/bin/sh
+#
+#Kasutaja loomine failist
+#
+for i in `more userlist.txt`
+do
+echo $i
+sudo adduser $i --gecos "" --disabled-password
+done
