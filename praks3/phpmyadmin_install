@@ -1,0 +1,11 @@
+#!/bin/bash
+#!/root/praks3/apache_install
+#
+#Phpmyadmin paigaldus
+#
+sh apache_install
+sleep 2
+echo "Paigaldame phpmyadmini..."
+sleep 1
+sudo apt-get install phpmyadmin php-mbstring php-gettext -y
+echo "phpmyadmin on paigaldatud/uuendatud"

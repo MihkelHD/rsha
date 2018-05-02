@@ -1,0 +1,11 @@
+#!/bin/bash
+#!/root/praks3/php_install
+#
+#Mysql-serveri paigaldus
+#
+sh php_install
+sleep 2
+echo "Paigaldame mysql-serveri"
+sleep 2
+sudo apt-get install mysql-server -y
+echo "Mysql-server paigaldatud/uuendatud"
