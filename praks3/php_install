@@ -1,0 +1,12 @@
+#!/bin/bash
+#!/bin/sh
+#!/root/praks3/apache_install
+#
+#PHP install koos vajalikke pakettidega ning ka apache paigaldus
+#
+sh apache_install
+sleep 2
+echo "Paigaldame veebiserveri halduseks vajalikud paketid..."
+sleep 5
+sudo apt-get install curl mysql-server php libapache2-mod-php php-mcrypt php-mysql php-cli
+echo "Paketid on paigaldatud/uuendatud"
