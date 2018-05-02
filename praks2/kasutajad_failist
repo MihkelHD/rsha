@@ -1,10 +1,35 @@
 #!/bin/bash
 #!/bin/sh
 #
-#Kasutaja loomine failist
+#Kasutaja loomine parooliga
 #
-for i in `more userlist.txt`
-do
-echo $i
-sudo adduser $i --gecos "" --disabled-password
-done
+#!/bin/bash
+  for row in `cat $1`
+  do
+      if [ $(id -u) -eq 0 ]; then
+  
+
+          username=${row%:*}
+          password=${row#*:}
+          #echo username
+          #echo password
+  
+
+          egrep "^$username" /etc/passwd >/dev/null
+  
+
+          if [ $? -eq 0 ]; then
+              echo "$username juba eksisteerib"
+              exit 1
+          else
+              pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)
+              useradd -m -p $pass $username
+              [ $? -eq 0 ] && echo "Kasutaja on lisatud süsteemi" || echo "Kasutaja lisamine ebaõnnestus"
+          fi
+  
+
+      else
+          echo "Ainult root võib lisada kasutajaid"
+          exit 2
+      fi
+  done
