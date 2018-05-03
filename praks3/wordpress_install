@@ -1,0 +1,39 @@
+#!/bin/bash -e
+#!/root/praks3/php_install
+#!/root/praks3/phpmyadmin_install
+#
+#Wordpressi paigaldus
+#
+sh php_install
+sh phpmyadmin_install
+echo "Paigaldame Wordpressi!"
+echo -n "Andmebaasi nimi: "
+read -e dbname
+echo -n "Andmebaasi kasutaja: "
+read -e dbuser
+echo -n "Andmebaasi parool: "
+read -s dbpass
+
+mysql -e "CREATE DATABASE $dbname"
+mysql -e "GRANT ALL PRIVILEGES ON $dbname.* TO '$dbuser'@'localhost' IDENTIFIED BY '$dbpass';"
+mysql -e "FLUSH PRIVILEGES;"
+
+curl -O https://wordpress.org/latest.tar.gz
+
+tar -zxvf latest.tar.gz
+
+cd wordpress
+
+cp wp-config-sample.php wp-config.php
+
+perl -pi -e "s/database_name_here/$dbname/g" wp-config.php
+perl -pi -e "s/username_here/$dbuser/g" wp-config.php
+perl -pi -e "s/password_here/$dbpass/g" wp-config.php
+
+mkdir wp-content/uploads
+chmod 775 wp-content/uploads
+
+rm ../latest.tar.gz
+
+sudo systemctl restart apache2.service 
+sudo systemctl restart mysql.service 
