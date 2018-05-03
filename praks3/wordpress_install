@@ -33,7 +33,14 @@ perl -pi -e "s/password_here/$dbpass/g" wp-config.php
 mkdir wp-content/uploads
 chmod 775 wp-content/uploads
 
-rm ../latest.tar.gz
+cd ..
+
+sudo rsync -av wordpress/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
+
+rm latest.tar.gz
 
 sudo systemctl restart apache2.service 
 sudo systemctl restart mysql.service 
+sudo rm /var/www/html/index.html
