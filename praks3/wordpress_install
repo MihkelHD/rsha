@@ -20,7 +20,7 @@ mysql -e "FLUSH PRIVILEGES;"
 
 curl -O https://wordpress.org/latest.tar.gz
 
-tar -zxvf latest.tar.gz
+tar -zxf latest.tar.gz
 
 cd wordpress
 
