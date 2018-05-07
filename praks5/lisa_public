@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+#masina_ip/~kasutajanimi/public/avalik_dokument
+#
+echo -n "Sisestage kasutajanimi: "
+read KASUTAJA
+
+a2enmod userdir
+service apache2 restart
+perl -pi -e "s/public_html/public/g" /etc/apache2/mods-enabled/userdir.conf
+
+mkdir /home/$KASUTAJA/public
+chmod 777 /home/$KASUTAJA/public
+
+#Kuna mul on nginx paigaltatud on vaja ka nginxi configi muuta
+
+cat /etc/nginx/sites-enabled/default | grep "location ~ ^/~(.+?)(/.*)?$ {"
+
+if [ `echo $?` -eq 1 ]; then
+	echo 'location ~ ^/~(.+?)(/.*)?$ {' >> /etc/nginx/sites-enabled/default
+	echo 'alias /home/$1/public$2;' >> /etc/nginx/sites-enabled/default
+	echo 'index  index.html index.htm;' >> /etc/nginx/sites-enabled/default
+	echo 'autoindex on;' >> /etc/nginx/sites-enabled/default
+	echo '}' >> /etc/nginx/sites-enabled/default
+fi
