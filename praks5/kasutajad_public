@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+#Public kataloogide tegemine
+#
+ls /home > kasutajad.txt
+for KASUTAJA in `more kasutajad.txt`
+do
+if [ ! -d /home/$KASUTAJA/public ]; then
+	mkdir /home/$KASUTAJA/public
+	chmod 777 /home/$KASUTAJA/public
+fi
+done
+rm kasutajad.txt
