@@ -1,0 +1,62 @@
+#!/bin/bash -e
+#
+#LEMPi paigaldamine koos wordpressiga
+#
+sudo apt-get install nginx
+sudo /etc/init.d/nginx start
+
+#apache_install
+if ! [ -x "$(command which apache2)" ]; then
+	echo 'apache2 pole paigaldatud!' >&2
+	echo "paigaldame selle sinu eest"
+	sudo apt-get install apache2 -y
+else
+	echo "apache2 on juba olemas"
+fi
+
+#php_install
+sudo apt-get install curl mysql-server php libapache2-mod-php php-mcrypt php-mysql php-cli -y
+
+#phpmyadmin_install
+sudo apt-get install phpmyadmin php-mbstring php-gettext -y
+
+#mysql_install
+sudo apt-get install mysql-server -y
+
+echo -n "Wordpressi andmebaasi nimi: "
+read -e dbname
+echo -n "Wordpressi andmebaasi kasutaja: "
+read -e dbuser
+echo -n "Wordpressi andmebaasi parool: "
+read -s dbpass
+
+mysql -e "CREATE DATABASE $dbname"
+mysql -e "GRANT ALL PRIVILEGES ON $dbname.* TO '$dbuser'@'localhost' IDENTIFIED BY '$dbpass';"
+mysql -e "FLUSH PRIVILEGES;"
+
+curl -O https://wordpress.org/latest.tar.gz
+
+tar -zxf latest.tar.gz
+
+cd wordpress
+
+cp wp-config-sample.php wp-config.php
+
+perl -pi -e "s/database_name_here/$dbname/g" wp-config.php
+perl -pi -e "s/username_here/$dbuser/g" wp-config.php
+perl -pi -e "s/password_here/$dbpass/g" wp-config.php
+
+mkdir wp-content/uploads
+chmod 775 wp-content/uploads
+
+cd ..
+
+sudo rsync -av wordpress/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
+
+rm latest.tar.gz
+
+sudo systemctl restart apache2.service 
+sudo systemctl restart mysql.service 
+sudo rm /var/www/html/index.html
