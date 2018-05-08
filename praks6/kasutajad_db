@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+#kasutajad_db
+#
+ls /home > kasutajad.txt
+for KASUTAJA in `more kasutajad.txt`
+do
+if [ ! -f /home/$KASUTAJA/.my.cnf ]; then
+	PASS=$(tr -dc '[:alnum:]' </dev/urandom | fold -w 8 | head -n 1)
+	DB1=$(echo "$KASUTAJA"_DB)
+	mysql -e "CREATE USER IF NOT EXISTS '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
+	mysql -e "CREATE DATABASE IF NOT EXISTS $DB1"
+	mysql -e "GRANT ALL PRIVILEGES ON $DB1.* TO '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
+	mysql -e "FLUSH PRIVILEGES;"
+	echo "[client]" > /home/$KASUTAJA/.my.cnf
+	echo "user=$KASUTAJA" >> /home/$KASUTAJA/.my.cnf
+	echo "password=$PASS" >> /home/$KASUTAJA/.my.cnf
+fi
+done
+rm kasutajad.txt
