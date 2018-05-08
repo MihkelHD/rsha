@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+#varunda_db_kasutaja
+#
+read -s -p "Kasutajanimi: " KASUTAJA
+DB1=$(echo "$KASUTAJA"_*)
+
+mysqldump $DB1 | bzip2 -c > <backup>$(date +%Y-%m-%d-%H.%M.).$DB1.backup.sql.bz2
