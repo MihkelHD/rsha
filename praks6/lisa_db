@@ -10,16 +10,10 @@ read DB
 PASS=$(tr -dc '[:alnum:]' </dev/urandom | fold -w 8 | head -n 1)
 DB1=$(echo "$KASUTAJA"_$DB)
 
-mysql -e "select User from mysql.user;" | grep $KASUTAJA > /dev/null
-if [ `echo $?` -eq 1 ]; then
-	mysql -e "CREATE USER '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
-	mysql -e "GRANT ALL PRIVILEGES ON $DB1.* TO '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
-	mysql -e "FLUSH PRIVILEGES;"
-	echo "Andmebaas:                $DB1" >> /home/$KASUTAJA/.my.cnf
-	echo "Andmebaas_kasutaja:       $KASUTAJA" >> /home/$KASUTAJA/.my.cnf
-	echo "MySQL_DB_parool:  $PASS" >> /home/$KASUTAJA/.my.cnf
-
-else
+	mysql -e "CREATE USER IF NOT EXISTS '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
 	mysql -e "CREATE DATABASE IF NOT EXISTS $DB1"
-	echo "Kasutaja on juba olemas!"
-fi
+	mysql -e "GRANT ALL PRIVILEGES ON $DB1.* TO '$KASUTAJA'@'localhost' IDENTIFIED BY '$PASS';"
+	mysql -e "FLUSH PRIVILEGES;"	
+	echo "[client]" > /home/$KASUTAJA/.my.cnf
+	echo "user=$KASUTAJA" >> /home/$KASUTAJA/.my.cnf
+	echo "password=$PASS" >> /home/$KASUTAJA/.my.cnf
