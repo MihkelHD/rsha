@@ -2,7 +2,9 @@
 #
 #varunda_db_kasutaja
 #
-read -s -p "Kasutajanimi: " KASUTAJA
-DB1=$(echo "$KASUTAJA"_*)
+echo -n "Kasutajanimi: "
+read KASUTAJA
+DB1=$(mysql -e "SHOW DATABASES;" | grep "$KASUTAJA"_*)
 
-mysqldump $DB1 | bzip2 -c > <backup>$(date +%Y-%m-%d-%H.%M.).$DB1.backup.sql.bz2
+mysqldump $DB1 | bzip2 -c > $(date +%Y-%m-%d-%H.%M.)$DB1.backup.sql.bz2
+mv $(date +%Y-%m-%d-%H.%M.)$DB1.backup.sql.bz2 /mysql_backup
