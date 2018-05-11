@@ -1,0 +1,4 @@
+SHELL = /bin/bash
+MAILTO= root
+0 */2 * * * /root/rsha/praks6/kasutajad_db
+@midnight mysqldump --all-databases > koik_db.sql
